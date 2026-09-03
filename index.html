@@ -73,33 +73,39 @@
   }
   .menu-btn svg{width:17px; height:17px; stroke:var(--creme);}
 
-  /* ---- CAPA ---- */
-  #capa{ position:relative; justify-content:flex-end; min-height:100vh;}
-  #capa .img-placeholder{position:absolute; inset:0; height:100%;}
-  .capa-overlay{
-    position:relative; z-index:2;
-    background:linear-gradient(180deg, rgba(43,36,24,0) 0%, rgba(24,32,20,.55) 45%, rgba(20,28,18,.9) 100%);
-    padding:40px 26px 34px; display:flex; flex-direction:column; justify-content:flex-end; min-height:100vh;
+  /* ---- CAPA (estilo revista / fluida) ---- */
+  #capa{ position:relative; min-height:100vh; padding:0;}
+  #capa img.capa-foto{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1;}
+  .capa-topo{
+    position:relative; z-index:3; display:flex; justify-content:flex-start; padding:20px;
   }
-  .brand-row{display:flex; align-items:center; gap:10px; margin-bottom:auto;}
-  .brand-mark{
-    width:44px; height:44px; border-radius:50%; background:var(--dourado);
-    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  .capa-badge-count{
+    background:rgba(0,0,0,.35); backdrop-filter:blur(3px); color:var(--branco);
+    font-size:12px; font-weight:600; padding:6px 13px; border-radius:20px;
+    display:flex; align-items:center; gap:6px;
   }
-  .brand-mark svg{width:24px; height:24px; stroke:var(--verde-escuro);}
-  .brand-name{color:var(--branco); line-height:1.15;}
-  .brand-name strong{display:block; font-family:'Fraunces', serif; font-size:15px; letter-spacing:.03em;}
-  .brand-name span{font-size:10.5px; letter-spacing:.14em; color:#E4DCC5;}
-  .capa-titulo{
-    font-family:'Caveat', cursive; color:var(--branco); font-size:52px; line-height:.95; margin-top:40px;
+  .capa-fade{
+    position:absolute; inset:0; z-index:2;
+    background:linear-gradient(180deg, rgba(20,28,18,.15) 0%, rgba(20,28,18,0) 22%, rgba(20,28,18,0) 55%, rgba(18,26,16,.85) 100%);
   }
-  .capa-sub{
-    color:#E9E4D3; font-size:14px; margin-top:10px; max-width:280px;
+  .capa-selo-wrap{
+    position:relative; z-index:3; margin-top:auto; display:flex; flex-direction:column; align-items:center;
+    padding-bottom:26px;
   }
-  .capa-cta{
-    margin-top:26px; align-self:flex-start;
-    background:var(--dourado); color:var(--verde-escuro); font-weight:600; font-size:13px;
-    padding:13px 22px; border-radius:30px; border:none; letter-spacing:.02em; cursor:pointer;
+  .capa-selo{
+    width:168px; height:168px; border-radius:50%; background:var(--creme);
+    border:3px solid var(--dourado); display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 24px rgba(0,0,0,.35); margin-bottom:18px; padding:14px;
+  }
+  .capa-selo img{width:100%; height:auto;}
+  .capa-menu-link{
+    display:flex; align-items:center; gap:8px; color:var(--branco); font-family:'Fraunces', serif;
+    font-size:15px; letter-spacing:.14em; font-weight:600; cursor:pointer; padding-bottom:6px;
+  }
+  .capa-menu-link svg{width:14px; height:14px; stroke:var(--branco);}
+  .capa-scrolltip{
+    position:relative; z-index:3; text-align:center; color:#EFE9D6; font-size:11px; padding-bottom:10px;
+    letter-spacing:.04em;
   }
 
   /* ---- MENU ---- */
@@ -172,6 +178,22 @@
   ul.simple li::before{
     content:''; position:absolute; left:0; top:7px; width:5px; height:5px; border-radius:50%; background:var(--terracota);
   }
+  .place-card{border-radius:18px; overflow:hidden; border:1px solid var(--linha); background:var(--branco); margin-bottom:18px;}
+  .place-card .foto{width:100%; height:150px; object-fit:cover; display:block;}
+  .place-card .info{padding:14px 16px 16px;}
+  .place-card h3{font-family:'Fraunces', serif; font-size:16px; color:var(--verde-escuro); margin-bottom:3px;}
+  .place-card .endereco{font-size:11.5px; color:#7A7259; margin-bottom:12px;}
+  .place-card .selos{display:flex; align-items:center; gap:8px;}
+  .selo-icone{
+    width:32px; height:32px; border-radius:50%; background:var(--verde-claro);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .selo-icone svg{width:15px; height:15px; stroke:var(--verde-escuro);}
+  .selo-pill{
+    font-size:11px; font-weight:600; color:var(--verde-escuro); background:var(--verde-claro);
+    padding:7px 12px; border-radius:20px; margin-left:auto;
+  }
+  .grupo-titulo{font-family:'Fraunces', serif; font-weight:600; font-size:15px; color:var(--terracota); margin:20px 0 12px;}
   .place-block{margin-bottom:16px;}
   .place-block h3{font-family:'Fraunces', serif; font-size:15px; color:var(--verde-escuro); margin-bottom:6px;}
 
@@ -198,21 +220,23 @@
 
   <!-- CAPA -->
   <section class="screen active" id="capa">
-    <img src="images/capa.jpg" alt="Ipê amarelo florido na entrada do Recanto dos Ipês" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 30%;">
-
-    <div class="capa-overlay">
-      <div class="brand-row">
-        <div class="brand-mark" style="background:var(--creme);">
-          <img src="images/logo-icone.png" alt="Ipê — símbolo Recanto dos Ipês" style="width:26px; height:auto;">
-        </div>
-        <div class="brand-name">
-          <strong>RECANTO DOS IPÊS</strong>
-          <span>PIRAPUTANGA · MS</span>
-        </div>
+    <img class="capa-foto" src="images/capa.jpg" alt="Ipê amarelo florido na entrada do Recanto dos Ipês">
+    <div class="capa-fade"></div>
+    <div class="capa-topo">
+      <span class="capa-badge-count">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        1 de 8
+      </span>
+    </div>
+    <div class="capa-selo-wrap">
+      <div class="capa-selo">
+        <img src="images/logo-full.png" alt="Recanto dos Ipês — Piraputanga-MS">
       </div>
-      <h1 class="capa-titulo">Guia do<br>Hóspede</h1>
-      <p class="capa-sub">Natureza, aconchego e boas histórias em Piraputanga — Aquidauana, MS.</p>
-      <button class="capa-cta" onclick="goTo('menu')">Ver o guia →</button>
+      <div class="capa-menu-link" onclick="goTo('menu')">
+        MENU
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <p class="capa-scrolltip">Guia do Hóspede · Piraputanga, MS</p>
     </div>
   </section>
 
@@ -401,43 +425,82 @@
       <h1>Onde Comer</h1>
       <img class="hero-img" src="images/comida.jpg" alt="Tábua de frios e vinho oferecida no Recanto dos Ipês" style="width:100%; height:150px; object-fit:cover; border-radius:16px; margin-bottom:16px;">
 
-      <p class="subhead">Em Piraputanga</p>
-      <ul class="simple">
-        <li>Pira Restaurante e Conveniência</li>
-        <li>Restaurante Tomazi</li>
-        <li>La Garcia</li>
-        <li>Serrano</li>
-        <li>Serra Verde</li>
-        <li>Padaria da Vila</li>
-        <li>Dona Creusa e os Netos</li>
-        <li>Parada Obrigatória</li>
-        <li>Vila RJT8</li>
-        <li>Jorge Faria</li>
-        <li>Raízes</li>
-        <li>Bar do Seu João</li>
-      </ul>
+      <p class="grupo-titulo">Em Piraputanga</p>
+      <div class="place-card">
+        <div class="img-placeholder foto"><span>FOTO — Pira Restaurante e Conveniência</span></div>
+        <div class="info">
+          <h3>Pira Restaurante e Conveniência</h3>
+          <p class="endereco">Coloque aqui o endereço</p>
+          <div class="selos">
+            <div class="selo-icone"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#2F4A34"/></svg></div>
+            <div class="selo-icone"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M12 21s7-6.5 7-11a7 7 0 10-14 0c0 4.5 7 11 7 11z"/><circle cx="12" cy="10" r="2"/></svg></div>
+            <span class="selo-pill">Avaliações no Google</span>
+          </div>
+        </div>
+      </div>
+      <div class="chiplist">
+        <span class="chip">Restaurante Tomazi</span>
+        <span class="chip">La Garcia</span>
+        <span class="chip">Serrano</span>
+        <span class="chip">Serra Verde</span>
+        <span class="chip">Padaria da Vila</span>
+        <span class="chip">Dona Creusa e os Netos</span>
+        <span class="chip">Parada Obrigatória</span>
+        <span class="chip">Vila RJT8</span>
+        <span class="chip">Jorge Faria</span>
+        <span class="chip">Raízes</span>
+        <span class="chip">Bar do Seu João</span>
+      </div>
 
-      <p class="subhead">Em Camisão</p>
-      <ul class="simple">
-        <li>Restaurante Sabor do Peixe</li>
-        <li>Pesqueiros e casas de pesca</li>
-      </ul>
+      <p class="grupo-titulo">Em Camisão</p>
+      <div class="place-card">
+        <div class="img-placeholder foto"><span>FOTO — Restaurante Sabor do Peixe</span></div>
+        <div class="info">
+          <h3>Restaurante Sabor do Peixe</h3>
+          <p class="endereco">Coloque aqui o endereço</p>
+          <div class="selos">
+            <div class="selo-icone"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#2F4A34"/></svg></div>
+            <div class="selo-icone"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M12 21s7-6.5 7-11a7 7 0 10-14 0c0 4.5 7 11 7 11z"/><circle cx="12" cy="10" r="2"/></svg></div>
+            <span class="selo-pill">Avaliações no Google</span>
+          </div>
+        </div>
+      </div>
+      <div class="chiplist"><span class="chip">Pesqueiros e casas de pesca</span></div>
 
-      <p class="subhead">Estrada-Parque</p>
-      <ul class="simple">
-        <li>Restaurante da Neguinha (Porções da Neguinha)</li>
-      </ul>
+      <p class="grupo-titulo">Estrada-Parque</p>
+      <div class="place-card">
+        <div class="img-placeholder foto"><span>FOTO — Restaurante da Neguinha</span></div>
+        <div class="info">
+          <h3>Restaurante da Neguinha</h3>
+          <p class="endereco">Porções da Neguinha — coloque aqui o endereço</p>
+          <div class="selos">
+            <div class="selo-icone"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#2F4A34"/></svg></div>
+            <div class="selo-icone"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M12 21s7-6.5 7-11a7 7 0 10-14 0c0 4.5 7 11 7 11z"/><circle cx="12" cy="10" r="2"/></svg></div>
+            <span class="selo-pill">Avaliações no Google</span>
+          </div>
+        </div>
+      </div>
 
-      <p class="subhead">Em Aquidauana</p>
-      <ul class="simple">
-        <li>Restaurante Casarão</li>
-        <li>Estação Pantaneira</li>
-        <li>Churrascaria O Laçador</li>
-        <li>Restaurante Amarelinho</li>
-      </ul>
+      <p class="grupo-titulo">Em Aquidauana</p>
+      <div class="place-card">
+        <div class="img-placeholder foto"><span>FOTO — Restaurante Casarão</span></div>
+        <div class="info">
+          <h3>Restaurante Casarão</h3>
+          <p class="endereco">Coloque aqui o endereço</p>
+          <div class="selos">
+            <div class="selo-icone"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#2F4A34"/></svg></div>
+            <div class="selo-icone"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M12 21s7-6.5 7-11a7 7 0 10-14 0c0 4.5 7 11 7 11z"/><circle cx="12" cy="10" r="2"/></svg></div>
+            <span class="selo-pill">Avaliações no Google</span>
+          </div>
+        </div>
+      </div>
+      <div class="chiplist">
+        <span class="chip">Estação Pantaneira</span>
+        <span class="chip">Churrascaria O Laçador</span>
+        <span class="chip">Restaurante Amarelinho</span>
+      </div>
 
       <div class="tip-box">Dica: os cardápios variam conforme o peixe disponível (pintado, dourado, jurupoca). A maioria funciona melhor no almoço — para o jantar, confirme antes!</div>
-      <img src="images/comida-noite.jpg" alt="Tábua de frios servida à noite no Recanto dos Ipês" style="width:100%; height:130px; object-fit:cover; border-radius:14px; margin-top:14px;">
       <div class="back-link" onclick="goTo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Voltar ao menu</div>
     </div>
   </section>
