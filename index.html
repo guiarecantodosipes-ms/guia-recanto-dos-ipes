@@ -41,10 +41,70 @@
     display:none;
     min-height:100vh;
     flex-direction:column;
-    animation:fadeIn .35s ease;
   }
-  .screen.active{display:flex;}
-  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+  .screen.active{display:flex; animation:screenFade .45s cubic-bezier(.22,1,.36,1);}
+  @keyframes screenFade{from{opacity:0; transform:translateY(10px) scale(.99);} to{opacity:1; transform:translateY(0) scale(1);}}
+
+  /* ---- entrada escalonada dos elementos (dinamismo tipo Samsung) ---- */
+  .content > *{ opacity:0;}
+  .screen.anim-play .content > *{ animation:riseIn .6s cubic-bezier(.22,1,.36,1) forwards; }
+  .screen.anim-play .content > *:nth-child(1){animation-delay:.03s;}
+  .screen.anim-play .content > *:nth-child(2){animation-delay:.09s;}
+  .screen.anim-play .content > *:nth-child(3){animation-delay:.15s;}
+  .screen.anim-play .content > *:nth-child(4){animation-delay:.21s;}
+  .screen.anim-play .content > *:nth-child(5){animation-delay:.27s;}
+  .screen.anim-play .content > *:nth-child(6){animation-delay:.33s;}
+  .screen.anim-play .content > *:nth-child(7){animation-delay:.38s;}
+  .screen.anim-play .content > *:nth-child(8){animation-delay:.43s;}
+  .screen.anim-play .content > *:nth-child(n+9){animation-delay:.48s;}
+  @keyframes riseIn{from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:translateY(0);}}
+
+  /* fotos: revelação com leve zoom, sobrepondo o fade genérico */
+  .screen.anim-play .content > img{ animation:kenFade .7s cubic-bezier(.22,1,.36,1) forwards; }
+  @keyframes kenFade{from{opacity:0; transform:scale(1.06) translateY(10px);} to{opacity:1; transform:scale(1) translateY(0);}}
+
+  /* capa: mesma entrada escalonada nos 4 blocos próprios */
+  #capa > *{opacity:0;}
+  .screen.anim-play#capa > .capa-arco{animation:kenFade .75s cubic-bezier(.22,1,.36,1) .05s forwards;}
+  .screen.anim-play#capa > .capa-texto{animation:riseIn .6s cubic-bezier(.22,1,.36,1) .32s forwards;}
+  .screen.anim-play#capa > .capa-menu-row{animation:riseIn .6s cubic-bezier(.22,1,.36,1) .5s forwards;}
+  .screen.anim-play#capa > .capa-rodape{animation:riseIn .6s cubic-bezier(.22,1,.36,1) .62s forwards;}
+
+  /* menu: ícones entram em leve sequência, tipo grid de app */
+  .menu-grid .menu-item{opacity:0;}
+  .screen.anim-play .menu-grid .menu-item{animation:popIn .5s cubic-bezier(.22,1,.36,1) forwards;}
+  .screen.anim-play .menu-grid .menu-item:nth-child(1){animation-delay:.04s;}
+  .screen.anim-play .menu-grid .menu-item:nth-child(2){animation-delay:.08s;}
+  .screen.anim-play .menu-grid .menu-item:nth-child(3){animation-delay:.12s;}
+  .screen.anim-play .menu-grid .menu-item:nth-child(4){animation-delay:.16s;}
+  .screen.anim-play .menu-grid .menu-item:nth-child(5){animation-delay:.20s;}
+  .screen.anim-play .menu-grid .menu-item:nth-child(6){animation-delay:.24s;}
+  .screen.anim-play .menu-grid .menu-item:nth-child(7){animation-delay:.28s;}
+  .screen.anim-play .menu-grid .menu-item:nth-child(8){animation-delay:.32s;}
+  .screen.anim-play .menu-grid .menu-item:nth-child(9){animation-delay:.36s;}
+  @keyframes popIn{from{opacity:0; transform:scale(.82);} to{opacity:1; transform:scale(1);}}
+
+  /* micro-interações de toque/hover */
+  .menu-item, .capa-menu-row .item, .place-card, .card, .chip, .capa-rodape, .back-link, .menu-btn{
+    transition:transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+  }
+  .menu-item:active{transform:scale(.93);}
+  .capa-menu-row .item:active{transform:scale(.95); opacity:.7;}
+  .place-card:active, .card:active{transform:scale(.97);}
+  .chip:active{transform:scale(.93);}
+  @media (hover:hover){
+    .place-card:hover{transform:translateY(-3px); box-shadow:0 10px 24px rgba(47,74,52,.12);}
+    .card:hover{transform:translateY(-2px); box-shadow:0 8px 18px rgba(47,74,52,.14);}
+    .menu-item:hover .menu-icon{transform:translateY(-2px); box-shadow:0 8px 16px rgba(47,74,52,.25);}
+    .capa-menu-row .item:hover{color:var(--terracota);}
+  }
+  .menu-icon{transition:transform .18s ease, box-shadow .18s ease;}
+
+  @media (prefers-reduced-motion: reduce){
+    .screen.active, .content > *, .menu-grid .menu-item, #capa > *{
+      animation:none !important; opacity:1 !important; transform:none !important;
+    }
+  }
 
   /* ---- placeholder de imagem ---- */
   .img-placeholder{
@@ -225,7 +285,7 @@
 <div class="phone">
 
   <!-- CAPA -->
-  <section class="screen active" id="capa">
+  <section class="screen active anim-play" id="capa">
     <div class="capa-arco">
       <img src="images/capa.jpg" alt="Ipê amarelo florido na entrada do Recanto dos Ipês">
     </div>
@@ -610,9 +670,12 @@
 
   function goTo(id){
     trackClick(id);
-    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    document.getElementById(id).scrollIntoView({behavior:'instant', block:'start'});
+    document.querySelectorAll('.screen').forEach(s=>{ s.classList.remove('active'); s.classList.remove('anim-play'); });
+    const target = document.getElementById(id);
+    target.classList.add('active');
+    void target.offsetWidth; // força reflow pra animação tocar de novo
+    target.classList.add('anim-play');
+    target.scrollIntoView({behavior:'instant', block:'start'});
     window.scrollTo(0,0);
   }
 
