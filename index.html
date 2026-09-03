@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Recanto dos Ipés | Guia do Hóspede</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Caveat:wght@600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --verde-escuro:#2F4A34;
+    --verde-oliva:#5C7052;
+    --verde-claro:#EEF1E7;
+    --creme:#FBF6EC;
+    --dourado:#D9A441;
+    --terracota:#A85C32;
+    --texto:#2B241C;
+    --branco:#FFFFFF;
+    --linha: rgba(47,74,52,0.15);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:#DDD8C8;
+    font-family:'Work Sans', sans-serif;
+    color:var(--texto);
+    display:flex;
+    justify-content:center;
+    min-height:100vh;
+  }
+  .phone{
+    width:100%;
+    max-width:430px;
+    min-height:100vh;
+    background:var(--creme);
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 0 40px rgba(0,0,0,0.25);
+  }
+  .screen{
+    display:none;
+    min-height:100vh;
+    flex-direction:column;
+    animation:fadeIn .35s ease;
+  }
+  .screen.active{display:flex;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  /* ---- placeholder de imagem ---- */
+  .img-placeholder{
+    background:repeating-linear-gradient(135deg, #C9CBB8, #C9CBB8 12px, #BEC0AC 12px, #BEC0AC 24px);
+    display:flex; align-items:center; justify-content:center; flex-direction:column;
+    color:#5C5C4E; text-align:center; gap:6px; padding:12px;
+  }
+  .img-placeholder svg{width:28px; height:28px; opacity:.6;}
+  .img-placeholder span{font-size:11px; font-weight:600; letter-spacing:.02em; line-height:1.3;}
+
+  /* ---- topo comum das telas internas ---- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 20px; position:sticky; top:0; z-index:5;
+    background:var(--creme);
+    border-bottom:1px solid var(--linha);
+  }
+  .page-count{
+    font-size:12px; font-weight:600; color:var(--verde-oliva);
+    background:var(--verde-claro); padding:5px 10px; border-radius:20px;
+  }
+  .menu-btn{
+    width:36px; height:36px; border-radius:50%;
+    background:var(--verde-escuro); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; border:none;
+  }
+  .menu-btn svg{width:17px; height:17px; stroke:var(--creme);}
+
+  /* ---- CAPA ---- */
+  #capa{ position:relative; justify-content:flex-end; min-height:100vh;}
+  #capa .img-placeholder{position:absolute; inset:0; height:100%;}
+  .capa-overlay{
+    position:relative; z-index:2;
+    background:linear-gradient(180deg, rgba(43,36,24,0) 0%, rgba(24,32,20,.55) 45%, rgba(20,28,18,.9) 100%);
+    padding:40px 26px 34px; display:flex; flex-direction:column; justify-content:flex-end; min-height:100vh;
+  }
+  .brand-row{display:flex; align-items:center; gap:10px; margin-bottom:auto;}
+  .brand-mark{
+    width:44px; height:44px; border-radius:50%; background:var(--dourado);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brand-mark svg{width:24px; height:24px; stroke:var(--verde-escuro);}
+  .brand-name{color:var(--branco); line-height:1.15;}
+  .brand-name strong{display:block; font-family:'Fraunces', serif; font-size:15px; letter-spacing:.03em;}
+  .brand-name span{font-size:10.5px; letter-spacing:.14em; color:#E4DCC5;}
+  .capa-titulo{
+    font-family:'Caveat', cursive; color:var(--branco); font-size:52px; line-height:.95; margin-top:40px;
+  }
+  .capa-sub{
+    color:#E9E4D3; font-size:14px; margin-top:10px; max-width:280px;
+  }
+  .capa-cta{
+    margin-top:26px; align-self:flex-start;
+    background:var(--dourado); color:var(--verde-escuro); font-weight:600; font-size:13px;
+    padding:13px 22px; border-radius:30px; border:none; letter-spacing:.02em; cursor:pointer;
+  }
+
+  /* ---- MENU ---- */
+  #menu{padding-bottom:30px;}
+  .menu-head{padding:26px 24px 6px; text-align:center;}
+  .menu-head .kicker{
+    font-family:'Caveat', cursive; color:var(--terracota); font-size:26px; display:block; margin-bottom:2px;
+  }
+  .menu-head h1{font-family:'Fraunces', serif; font-size:30px; font-weight:600; color:var(--verde-escuro);}
+  .menu-head p{font-size:13px; color:var(--verde-oliva); margin-top:6px;}
+  .menu-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding:22px 22px 10px;
+  }
+  .menu-item{
+    display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer; text-align:center;
+  }
+  .menu-icon{
+    width:100%; aspect-ratio:1; border-radius:20px; background:var(--verde-escuro);
+    display:flex; align-items:center; justify-content:center; transition:transform .15s ease;
+  }
+  .menu-item:active .menu-icon{transform:scale(.93);}
+  .menu-icon svg{width:26px; height:26px; stroke:var(--creme); fill:none;}
+  .menu-item span{font-size:11px; font-weight:600; color:var(--texto); line-height:1.25;}
+  .menu-footer{
+    margin:18px 22px 0; padding:16px; border:1px solid var(--linha); border-radius:16px;
+    display:flex; align-items:center; gap:12px; background:var(--verde-claro);
+  }
+  .menu-footer svg{width:20px; height:20px; stroke:var(--verde-escuro); flex-shrink:0;}
+  .menu-footer p{font-size:11.5px; color:var(--verde-oliva); line-height:1.4;}
+
+  /* ---- SEÇÕES INTERNAS ---- */
+  .content{padding:22px 24px 40px; flex:1;}
+  .eyebrow{
+    font-family:'Caveat', cursive; color:var(--terracota); font-size:22px; display:block;
+  }
+  .content h1{
+    font-family:'Fraunces', serif; font-size:27px; font-weight:600; color:var(--verde-escuro);
+    margin-top:2px; line-height:1.15;
+  }
+  .content .lead{font-size:13.5px; color:#4A4433; margin:12px 0 18px; line-height:1.55;}
+  .hero-img{width:100%; height:150px; border-radius:16px; margin-bottom:18px;}
+  .divider{height:1px; background:var(--linha); margin:20px 0;}
+
+  .feature-list{display:flex; flex-direction:column; gap:12px; margin:16px 0;}
+  .feature{display:flex; align-items:center; gap:12px;}
+  .feature-ico{
+    width:34px; height:34px; border-radius:50%; background:var(--verde-escuro);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .feature-ico svg{width:16px; height:16px; stroke:var(--creme);}
+  .feature p{font-size:13px; font-weight:500;}
+
+  .card-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:14px 0;}
+  .card{border-radius:14px; overflow:hidden; border:1px solid var(--linha); background:var(--branco);}
+  .card .img-placeholder{height:78px;}
+  .card p{font-size:11.5px; font-weight:600; text-align:center; padding:8px 6px;}
+
+  .tip-box{
+    background:var(--dourado); color:var(--verde-escuro); border-radius:14px; padding:14px 16px;
+    font-size:12.5px; font-weight:500; line-height:1.5; margin:16px 0;
+  }
+  .subhead{font-family:'Fraunces', serif; font-weight:600; font-size:16px; color:var(--verde-escuro); margin:18px 0 10px;}
+  .chiplist{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;}
+  .chip{
+    font-size:11.5px; font-weight:500; background:var(--verde-claro); color:var(--verde-escuro);
+    padding:7px 12px; border-radius:20px;
+  }
+  ul.simple{padding-left:0; list-style:none; display:flex; flex-direction:column; gap:7px;}
+  ul.simple li{font-size:13px; padding-left:16px; position:relative;}
+  ul.simple li::before{
+    content:''; position:absolute; left:0; top:7px; width:5px; height:5px; border-radius:50%; background:var(--terracota);
+  }
+  .place-block{margin-bottom:16px;}
+  .place-block h3{font-family:'Fraunces', serif; font-size:15px; color:var(--verde-escuro); margin-bottom:6px;}
+
+  .contact-row{
+    display:flex; align-items:center; gap:12px; padding:13px 14px; border:1px solid var(--linha);
+    border-radius:14px; margin-bottom:10px; background:var(--branco);
+  }
+  .contact-row svg{width:18px; height:18px; stroke:var(--verde-escuro); flex-shrink:0;}
+  .contact-row div{display:flex; flex-direction:column;}
+  .contact-row strong{font-size:12.5px;}
+  .contact-row span{font-size:11.5px; color:#665F4F;}
+  .emergency-row{background:#FBEAE6; border-color:#EFC9BF;}
+  .emergency-row strong{color:#A5402A;}
+
+  .back-link{
+    display:flex; align-items:center; gap:8px; margin-top:26px; color:var(--verde-oliva);
+    font-size:12.5px; font-weight:600; cursor:pointer;
+  }
+  .back-link svg{width:14px; height:14px; stroke:var(--verde-oliva);}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- CAPA -->
+  <section class="screen active" id="capa">
+    <img src="images/capa.jpg" alt="Ipê amarelo florido na entrada do Recanto dos Ipês" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 30%;">
+
+    <div class="capa-overlay">
+      <div class="brand-row">
+        <div class="brand-mark" style="background:var(--creme);">
+          <img src="images/logo-icone.png" alt="Ipê — símbolo Recanto dos Ipês" style="width:26px; height:auto;">
+        </div>
+        <div class="brand-name">
+          <strong>RECANTO DOS IPÊS</strong>
+          <span>PIRAPUTANGA · MS</span>
+        </div>
+      </div>
+      <h1 class="capa-titulo">Guia do<br>Hóspede</h1>
+      <p class="capa-sub">Natureza, aconchego e boas histórias em Piraputanga — Aquidauana, MS.</p>
+      <button class="capa-cta" onclick="goTo('menu')">Ver o guia →</button>
+    </div>
+  </section>
+
+  <!-- MENU -->
+  <section class="screen" id="menu">
+    <div class="menu-head">
+      <img src="images/logo-full.png" alt="Recanto dos Ipês — Piraputanga-MS" style="height:52px; width:auto; margin:0 auto 14px; display:block;">
+      <span class="kicker">Bem-vindo(a)!</span>
+      <h1>Menu do Guia</h1>
+      <p>Toque em um ícone para ver o conteúdo</p>
+    </div>
+    <div class="menu-grid">
+      <div class="menu-item" onclick="goTo('boasvindas')">
+        <div class="menu-icon"><svg viewBox="0 0 24 24" stroke="#FBF6EC" stroke-width="1.6"><path d="M4 21V9l8-6 8 6v12" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 21v-7h6v7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span>Boas-vindas</span>
+      </div>
+      <div class="menu-item" onclick="goTo('localizacao')">
+        <div class="menu-icon"><svg viewBox="0 0 24 24" stroke="#FBF6EC" stroke-width="1.6"><path d="M12 21s7-6.5 7-11a7 7 0 10-14 0c0 4.5 7 11 7 11z" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.3"/></svg></div>
+        <span>Onde estamos</span>
+      </div>
+      <div class="menu-item" onclick="goTo('passeios')">
+        <div class="menu-icon"><svg viewBox="0 0 24 24" stroke="#FBF6EC" stroke-width="1.6"><path d="M4 20l6-14 3 7 2-4 5 11H4z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span>Passeios &amp; Atividades</span>
+      </div>
+      <div class="menu-item" onclick="goTo('cultura')">
+        <div class="menu-icon"><svg viewBox="0 0 24 24" stroke="#FBF6EC" stroke-width="1.6"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span>Cultura &amp; História</span>
+      </div>
+      <div class="menu-item" onclick="goTo('ondecomer')">
+        <div class="menu-icon"><svg viewBox="0 0 24 24" stroke="#FBF6EC" stroke-width="1.6"><path d="M6 3v7a2 2 0 002 2v9M6 3v9M9 3v9M15 3c-1.5 0-2 2-2 4s.7 3 2 3v9" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span>Onde Comer</span>
+      </div>
+      <div class="menu-item" onclick="goTo('dicas')">
+        <div class="menu-icon"><svg viewBox="0 0 24 24" stroke="#FBF6EC" stroke-width="1.6"><path d="M9 18h6M10 21h4M12 3a6 6 0 00-3.5 10.9c.5.4.5 1 .5 1.6h6c0-.6 0-1.2.5-1.6A6 6 0 0012 3z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span>Dicas do Recanto</span>
+      </div>
+      <div class="menu-item" onclick="goTo('contatos')">
+        <div class="menu-icon"><svg viewBox="0 0 24 24" stroke="#FBF6EC" stroke-width="1.6"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .3 2 .6 2.9a2 2 0 01-.5 2.1L8 9.9a16 16 0 006 6l1.2-1.2a2 2 0 012.1-.5c.9.3 1.9.5 2.9.6a2 2 0 011.8 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span>Contatos &amp; Emergência</span>
+      </div>
+      <div class="menu-item" onclick="goTo('wifi')">
+        <div class="menu-icon"><svg viewBox="0 0 24 24" stroke="#FBF6EC" stroke-width="1.6"><path d="M5 12.5a11 11 0 0114 0M8 16a6.5 6.5 0 018 0" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="19.5" r="1" fill="#FBF6EC"/></svg></div>
+        <span>Wi-Fi</span>
+      </div>
+      <div class="menu-item" onclick="trackExternal('instagram'); window.open('https://www.instagram.com/recantodosipes.piraputanga/','_blank')">
+        <div class="menu-icon"><svg viewBox="0 0 24 24" stroke="#FBF6EC" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#FBF6EC"/></svg></div>
+        <span>Instagram</span>
+      </div>
+    </div>
+    <div class="menu-footer">
+      <img src="images/logo-icone.png" alt="" style="width:20px; height:auto; flex-shrink:0;">
+      <p>Recanto dos Ipês — Piraputanga, Aquidauana/MS. A 31 km do centro de Aquidauana e 135 km de Campo Grande.</p>
+    </div>
+  </section>
+
+  <!-- BOAS-VINDAS -->
+  <section class="screen" id="boasvindas">
+    <div class="topbar"><span class="page-count">1 de 7</span><button class="menu-btn" onclick="goTo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg></button></div>
+    <div class="content">
+      <span class="eyebrow">Sinta-se em casa</span>
+      <h1>Bem-vindo(a) ao Recanto dos Ipês!</h1>
+      <img class="hero-img" src="images/fachada.webp" alt="Varanda do Recanto dos Ipês ao entardecer" style="width:100%; height:150px; object-fit:cover; border-radius:16px; margin-bottom:14px;">
+      <p class="lead">É uma alegria receber você no Recanto dos Ipês, em Piraputanga! Aqui, a natureza se encontra com o aconchego, a tranquilidade e a beleza única do Pantanal.</p>
+      <p class="lead">Este guia foi preparado com carinho para que sua estadia seja inesquecível. Reunimos dicas de passeios, gastronomia, cultura, história e tudo o que a nossa região tem de melhor.</p>
+      <div class="card-grid">
+        <div class="card"><img src="images/piscina.avif" alt="Piscina do Recanto dos Ipês" style="width:100%; height:78px; object-fit:cover;"><p>Piscina</p></div>
+        <div class="card"><img src="images/varanda.webp" alt="Varanda com redes do Recanto dos Ipês" style="width:100%; height:78px; object-fit:cover;"><p>Área de Convivência</p></div>
+      </div>
+      <div class="tip-box">"Sinta-se em casa e aproveite cada momento!" — Você não está apenas hospedado em Piraputanga, você está vivendo um dos lugares mais especiais do Mato Grosso do Sul.</div>
+      <div class="back-link" onclick="goTo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Voltar ao menu</div>
+    </div>
+  </section>
+
+  <!-- LOCALIZAÇÃO -->
+  <section class="screen" id="localizacao">
+    <div class="topbar"><span class="page-count">2 de 7</span><button class="menu-btn" onclick="goTo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg></button></div>
+    <div class="content">
+      <span class="eyebrow">Como chegar</span>
+      <h1>Onde estamos</h1>
+      <div style="width:100%; height:150px; border-radius:16px; overflow:hidden; margin-bottom:18px; border:1px solid var(--linha);">
+        <iframe src="https://www.google.com/maps?q=-20.4792316,-55.539176&z=15&output=embed" width="100%" height="150" style="border:0; display:block;" loading="lazy" title="Mapa do Recanto dos Ipês"></iframe>
+      </div>
+      <div class="feature-list">
+        <div class="feature"><div class="feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><path d="M3 12h18M3 12l4-4M3 12l4 4"/></svg></div><p>31 km do centro de Aquidauana</p></div>
+        <div class="feature"><div class="feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><path d="M4 18l16-6-16-6v5l10 1-10 1v5z"/></svg></div><p>42,5 km pela Estrada-Parque (MS-450)</p></div>
+        <div class="feature"><div class="feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><p>135 km de Campo Grande</p></div>
+      </div>
+      <div class="divider"></div>
+      <div style="display:flex; align-items:center; gap:14px; padding:14px; border:1px solid var(--linha); border-radius:14px;">
+        <img src="images/qr-code.svg" alt="QR Code de localização" style="width:80px; height:80px; flex-shrink:0;">
+        <div>
+          <p style="font-size:12.5px; font-weight:600; margin-bottom:4px;">Localização no Google Maps</p>
+          <p style="font-size:11.5px; color:#665F4F;">Aponte a câmera do seu celular ou <a href="https://maps.app.goo.gl/8HNaurzGrjgBaLtQ9" target="_blank" style="color:var(--verde-escuro); font-weight:600;">toque aqui</a></p>
+        </div>
+      </div>
+      <div class="back-link" onclick="goTo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Voltar ao menu</div>
+    </div>
+  </section>
+
+  <!-- PASSEIOS -->
+  <section class="screen" id="passeios">
+    <div class="topbar"><span class="page-count">3 de 7</span><button class="menu-btn" onclick="goTo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg></button></div>
+    <div class="content">
+      <span class="eyebrow">Aventura e contemplação</span>
+      <h1>Passeios &amp; Atividades</h1>
+
+      <div class="place-block">
+        <h3>Morro do Paxixi — o mirante natural</h3>
+        <div class="img-placeholder hero-img" style="height:120px;"><span>FOTO — Morro do Paxixi</span></div>
+        <p class="lead">Um dos cartões-postais mais impressionantes de Aquidauana. Do alto, a vista revela a Serra de Maracaju, a planície pantaneira e o Rio Aquidauana.</p>
+        <div class="chiplist">
+          <span class="chip">Trilha nível moderado</span>
+          <span class="chip">Pôr do sol inesquecível</span>
+          <span class="chip">Vários mirantes</span>
+        </div>
+        <div class="tip-box">Dica: leve água, calçado adequado e vá no fim da tarde para ver o pôr do sol!</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="place-block">
+        <h3>Piraputanga e Camisão</h3>
+        <p class="lead">Explore a Estrada-Parque MS-450, uma rota ecológica de cerca de 42,5 km que liga Piraputanga a Camisão — cercada por serras, paredões de arenito, o Rio Aquidauana e a história da antiga ferrovia Noroeste do Brasil.</p>
+        <div class="card-grid">
+          <div class="card"><div class="img-placeholder"><span>Rafting</span></div><p>Rafting no Rio Aquidauana</p></div>
+          <div class="card"><div class="img-placeholder"><span>Barco</span></div><p>Passeio de barco</p></div>
+          <div class="card"><div class="img-placeholder"><span>Camisão</span></div><p>Ponte de Camisão</p></div>
+          <div class="card"><div class="img-placeholder"><span>Morro</span></div><p>Morro do Chapéu</p></div>
+        </div>
+        <p class="subhead">O que fazer</p>
+        <ul class="simple">
+          <li>Rafting no Rio Aquidauana</li>
+          <li>Passeio de barco (amanhecer/entardecer)</li>
+          <li>Trilhas e mountain bike</li>
+          <li>Voo de balão (Pantanal Balonismo)</li>
+          <li>Pesca esportiva (pesque-solte)</li>
+          <li>Escalada e rapel</li>
+          <li>Cachoeira do Morcego</li>
+          <li>Estrada-Parque (bike, moto ou carro)</li>
+        </ul>
+      </div>
+      <div class="back-link" onclick="goTo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Voltar ao menu</div>
+    </div>
+  </section>
+
+  <!-- CULTURA -->
+  <section class="screen" id="cultura">
+    <div class="topbar"><span class="page-count">4 de 7</span><button class="menu-btn" onclick="goTo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg></button></div>
+    <div class="content">
+      <span class="eyebrow">Tradição, força e identidade</span>
+      <h1>Nossa Cultura Terena</h1>
+      <p class="lead">A região de Aquidauana possui forte presença indígena, especialmente do povo Terena, que mantém vivas suas tradições, língua, arte e espiritualidade.</p>
+      <div class="card-grid">
+        <div class="card"><div class="img-placeholder"><span>Igreja de Pedra</span></div><p>Igreja de Pedra — Aldeia Limão Verde</p></div>
+        <div class="card"><div class="img-placeholder"><span>Artesanato</span></div><p>Artesanato Terena</p></div>
+      </div>
+      <p class="subhead">Aldeias na região</p>
+      <div class="chiplist">
+        <span class="chip">Limão Verde (Terena)</span>
+        <span class="chip">Bananal (Terena)</span>
+        <span class="chip">Buriti (Terena)</span>
+        <span class="chip">Lagoinha (Kadiwéu)</span>
+      </div>
+      <p class="lead" style="font-size:12px; margin-top:14px;">A Igreja de Pedra, construída com pedras da própria região, é um símbolo da resistência e história do povo Terena. Visite com consciência e respeite a comunidade.</p>
+
+      <div class="divider"></div>
+
+      <span class="eyebrow">Patrimônio e tradição</span>
+      <h1 style="font-size:23px;">Aquidauana Histórica</h1>
+      <p class="lead">Conheça a história e o charme da cidade que é porta de entrada para o Pantanal.</p>
+      <div class="card-grid">
+        <div class="card"><div class="img-placeholder"><span>Igreja Matriz</span></div><p>Igreja Matriz — Imaculada Conceição</p></div>
+        <div class="card"><div class="img-placeholder"><span>Ponte Velha</span></div><p>Ponte Velha Roldão Carlos de Oliveira</p></div>
+        <div class="card"><div class="img-placeholder"><span>Estação</span></div><p>Estação Ferroviária / Casa do Artesão</p></div>
+        <div class="card"><div class="img-placeholder"><span>Museu</span></div><p>Museu de Arte Pantaneira</p></div>
+      </div>
+      <div class="back-link" onclick="goTo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Voltar ao menu</div>
+    </div>
+  </section>
+
+  <!-- ONDE COMER -->
+  <section class="screen" id="ondecomer">
+    <div class="topbar"><span class="page-count">5 de 7</span><button class="menu-btn" onclick="goTo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg></button></div>
+    <div class="content">
+      <span class="eyebrow">Sabores do Pantanal</span>
+      <h1>Onde Comer</h1>
+      <img class="hero-img" src="images/comida.avif" alt="Tábua de frios e vinho oferecida no Recanto dos Ipês" style="width:100%; height:150px; object-fit:cover; border-radius:16px; margin-bottom:16px;">
+
+      <p class="subhead">Em Piraputanga</p>
+      <ul class="simple">
+        <li>Pira Restaurante e Conveniência</li>
+        <li>Restaurante Tomazi</li>
+        <li>La Garcia</li>
+        <li>Serrano</li>
+        <li>Serra Verde</li>
+        <li>Padaria da Vila</li>
+        <li>Dona Creusa e os Netos</li>
+        <li>Parada Obrigatória</li>
+        <li>Vila RJT8</li>
+        <li>Jorge Faria</li>
+        <li>Raízes</li>
+        <li>Bar do Seu João</li>
+      </ul>
+
+      <p class="subhead">Em Camisão</p>
+      <ul class="simple">
+        <li>Restaurante Sabor do Peixe</li>
+        <li>Pesqueiros e casas de pesca</li>
+      </ul>
+
+      <p class="subhead">Estrada-Parque</p>
+      <ul class="simple">
+        <li>Restaurante da Neguinha (Porções da Neguinha)</li>
+      </ul>
+
+      <p class="subhead">Em Aquidauana</p>
+      <ul class="simple">
+        <li>Restaurante Casarão</li>
+        <li>Estação Pantaneira</li>
+        <li>Churrascaria O Laçador</li>
+        <li>Restaurante Amarelinho</li>
+      </ul>
+
+      <div class="tip-box">Dica: os cardápios variam conforme o peixe disponível (pintado, dourado, jurupoca). A maioria funciona melhor no almoço — para o jantar, confirme antes!</div>
+      <img src="images/comida-noite.avif" alt="Tábua de frios servida à noite no Recanto dos Ipês" style="width:100%; height:130px; object-fit:cover; border-radius:14px; margin-top:14px;">
+      <div class="back-link" onclick="goTo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Voltar ao menu</div>
+    </div>
+  </section>
+
+  <!-- DICAS -->
+  <section class="screen" id="dicas">
+    <div class="topbar"><span class="page-count">6 de 7</span><button class="menu-btn" onclick="goTo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg></button></div>
+    <div class="content">
+      <span class="eyebrow">Para aproveitar ao máximo</span>
+      <h1>Dicas do Recanto</h1>
+      <img class="hero-img" src="images/varanda-noite.avif" alt="Varanda do Recanto dos Ipês à noite" style="width:100%; height:150px; object-fit:cover; border-radius:16px; margin-bottom:16px;">
+      <div class="feature-list">
+        <div class="feature"><div class="feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><p><strong>Horários:</strong> muitos restaurantes funcionam melhor no almoço. Para o jantar, confirme antes.</p></div>
+        <div class="feature"><div class="feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg></div><p><strong>Reservas:</strong> agende passeios de barco, balonismo, pesca e trilhas com antecedência.</p></div>
+        <div class="feature"><div class="feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/></svg></div><p><strong>Pagamentos:</strong> leve dinheiro/Pix como alternativa.</p></div>
+        <div class="feature"><div class="feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><path d="M12 21s7-6.5 7-11a7 7 0 10-14 0c0 4.5 7 11 7 11z"/></svg></div><p><strong>Melhor horário para passeio de barco:</strong> amanhecer ou entardecer.</p></div>
+        <div class="feature"><div class="feature-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div><p><strong>Explore:</strong> fotografe, contemple, respire e viva cada momento.</p></div>
+      </div>
+      <div class="tip-box">Preserve a fauna e a flora da região. Respeite os costumes e a comunidade local.</div>
+      <div class="back-link" onclick="goTo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Voltar ao menu</div>
+    </div>
+  </section>
+
+  <!-- CONTATOS -->
+  <section class="screen" id="contatos">
+    <div class="topbar"><span class="page-count">7 de 7</span><button class="menu-btn" onclick="goTo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg></button></div>
+    <div class="content">
+      <span class="eyebrow">Estamos por aqui</span>
+      <h1>Contatos &amp; Emergência</h1>
+
+      <p class="subhead">Nossos contatos</p>
+      <div class="contact-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><path d="M3 5a2 2 0 012-2h2l2 5-2 1a11 11 0 006 6l1-2 5 2v2a2 2 0 01-2 2A16 16 0 013 5z"/></svg>
+        <div><strong>WhatsApp</strong><span>(67) 9984-6000 — Rhobson Tavares Lima</span></div>
+      </div>
+      <div class="contact-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#2F4A34"/></svg>
+        <div><strong>Instagram</strong><span>@recantodosipes.piraputanga</span></div>
+      </div>
+      <div class="contact-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+        <div><strong>E-mail</strong><span>contato@recantodosipes.com.br</span></div>
+      </div>
+
+      <p class="subhead">Emergências</p>
+      <div class="contact-row emergency-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></svg>
+        <div><strong>Polícia Militar</strong><span>190</span></div>
+      </div>
+      <div class="contact-row emergency-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><path d="M12 2c3 4 6 7 6 11a6 6 0 01-12 0c0-4 3-7 6-11z"/></svg>
+        <div><strong>Bombeiros</strong><span>193</span></div>
+      </div>
+      <div class="contact-row emergency-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><path d="M12 21s-7-4.5-9-9a5.5 5.5 0 019.5-4.9A5.5 5.5 0 0121 12c-2 4.5-9 9-9 9z"/></svg>
+        <div><strong>SAMU</strong><span>192</span></div>
+      </div>
+
+      <div class="tip-box" style="margin-top:20px;">Volte sempre! 💛 — Equipe Recanto dos Ipês</div>
+      <div class="back-link" onclick="goTo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Voltar ao menu</div>
+    </div>
+  </section>
+
+  <!-- WIFI -->
+  <section class="screen" id="wifi">
+    <div class="topbar"><span class="page-count">Wi-Fi</span><button class="menu-btn" onclick="goTo('menu')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg></button></div>
+    <div class="content" style="display:flex; flex-direction:column; align-items:center; text-align:center; padding-top:60px;">
+      <div class="feature-ico" style="width:70px; height:70px; margin-bottom:20px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" style="width:34px; height:34px;"><path d="M5 12.5a11 11 0 0114 0M8 16a6.5 6.5 0 018 0" stroke-linecap="round"/><circle cx="12" cy="19.5" r="1" fill="#FBF6EC"/></svg>
+      </div>
+      <span class="eyebrow">Conecte-se</span>
+      <h1>Senha do Wi-Fi</h1>
+      <div class="tip-box" style="width:100%; margin-top:20px;">
+        <strong>Rede:</strong> [ COLOQUE O NOME DA REDE ]<br>
+        <strong>Senha:</strong> [ COLOQUE A SENHA ]
+      </div>
+      <div class="back-link" onclick="goTo('menu')" style="justify-content:center;"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>Voltar ao menu</div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // ====== SUPABASE — CONTADOR DE CLIQUES ======
+  // 1) Crie um projeto em supabase.com
+  // 2) Rode o SQL do arquivo cliques-guia-setup.sql (fornecido junto) no SQL Editor
+  // 3) Cole aqui a URL do projeto e a chave "anon public" (Settings > API)
+  const SUPABASE_URL = "COLE_AQUI_A_URL_DO_SEU_PROJETO";
+  const SUPABASE_ANON_KEY = "COLE_AQUI_A_ANON_KEY";
+  let supabaseClient = null;
+  try{
+    if(SUPABASE_URL.startsWith("http")){
+      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+  }catch(e){ console.warn("Supabase não configurado ainda."); }
+
+  function trackClick(secao){
+    if(!supabaseClient) return; // sem config ainda, navegação funciona normal
+    supabaseClient.from('cliques_guia').insert({ secao: secao }).then(()=>{}).catch(()=>{});
+  }
+
+  function goTo(id){
+    trackClick(id);
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.getElementById(id).scrollIntoView({behavior:'instant', block:'start'});
+    window.scrollTo(0,0);
+  }
+
+  function trackExternal(secao){
+    trackClick(secao);
+  }
+</script>
+</body>
+</html>
