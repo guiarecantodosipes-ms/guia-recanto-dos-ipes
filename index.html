@@ -107,73 +107,6 @@
     }
   }
 
-  /* ================================================================
-     RESPONSIVIDADE — TABLET E DESKTOP
-     No celular, o guia ocupa a tela toda (comportamento de app).
-     Em telas maiores, continua ocupando a tela toda — sem cartão
-     flutuando — só que com mais colunas e fotos maiores pra
-     aproveitar o espaço extra.
-     ================================================================ */
-
-  /* TABLET (a partir de ~700px) */
-  @media (min-width:700px){
-    body{ padding:0; align-items:stretch; }
-    .phone{
-      max-width:100%; width:100%; min-height:100vh;
-      border-radius:0; box-shadow:none; border:none;
-    }
-    #capa{ height:100vh; padding-top:6vh; }
-    .capa-arco{ max-width:360px; height:38vh; min-height:280px; }
-    .capa-menu-row{ max-width:640px; margin-left:auto; margin-right:auto; }
-
-    .menu-grid{
-      grid-template-columns:repeat(auto-fit, minmax(130px,1fr));
-      gap:18px; padding:36px 44px 18px; max-width:900px; margin:0 auto;
-    }
-    .menu-head{ max-width:900px; margin:0 auto; padding-left:44px; padding-right:44px; }
-    .menu-footer{ max-width:900px; margin:20px auto 0; margin-left:auto; margin-right:auto; }
-
-    .content{ max-width:680px; margin:0 auto; padding:36px 32px 56px; width:100%; }
-    .content h1{ font-size:29px; }
-    .card-grid{ grid-template-columns:repeat(3,1fr); gap:14px; }
-    .place-card{ display:flex; flex-direction:row; }
-    .place-card .foto{ width:40%; height:auto; min-height:160px; flex-shrink:0; }
-    .place-card .info{ flex:1; display:flex; flex-direction:column; justify-content:center; }
-    .hero-img, .content > .img-placeholder.hero-img{ height:250px; }
-  }
-
-  /* DESKTOP (a partir de ~1024px) */
-  @media (min-width:1024px){
-    #capa{ padding-top:7vh; }
-    .capa-arco{ max-width:420px; height:42vh; min-height:320px; }
-    .capa-titulo-topo{ font-size:32px; }
-    .capa-tagline{ font-size:15px; max-width:280px; }
-
-    .menu-grid{ max-width:1080px; gap:22px; padding:48px 60px 22px; }
-    .menu-head{ max-width:1080px; padding-left:60px; padding-right:60px; }
-    .menu-head h1{ font-size:34px; }
-    .menu-footer{ max-width:1080px; }
-    .menu-icon svg{ width:28px; height:28px; }
-
-    .content{ max-width:820px; padding:44px 40px 64px; }
-    .content h1{ font-size:34px; }
-    .content .lead{ font-size:15.5px; }
-    .card-grid{ grid-template-columns:repeat(4,1fr); gap:16px; }
-    .hero-img, .content > .img-placeholder.hero-img{ height:300px; }
-    .place-card .foto{ width:36%; }
-
-    /* cursor de mãozinha nos itens clicáveis, já que agora tem gente com mouse */
-    .menu-item, .capa-menu-row .item, .place-card, .card, .chip, .capa-rodape, .back-link, .contact-row{
-      cursor:pointer;
-    }
-  }
-
-  /* TELAS MUITO LARGAS (a partir de ~1440px) — a foto de fundo da
-     capa acompanha a largura, o resto do conteúdo continua legível */
-  @media (min-width:1440px){
-    .content{ max-width:880px; }
-    .menu-grid, .menu-head, .menu-footer{ max-width:1180px; }
-  }
 
   /* ---- placeholder de imagem ---- */
   .img-placeholder{
@@ -355,6 +288,124 @@
     font-size:12.5px; font-weight:600; cursor:pointer;
   }
   .back-link svg{width:14px; height:14px; stroke:var(--verde-oliva);}
+  /* ================================================================
+     RESPONSIVIDADE — TABLET E DESKTOP
+     No celular, o guia ocupa a tela toda (comportamento de app).
+     Em telas maiores, continua ocupando a tela toda — sem cartão
+     flutuando — só que com mais colunas e fotos maiores pra
+     aproveitar o espaço extra.
+     ================================================================ */
+
+  /* TABLET (a partir de ~700px) */
+  @media (min-width:700px){
+    body{ padding:0; align-items:stretch; }
+    .phone{
+      max-width:100%; width:100%; min-height:100vh;
+      border-radius:0; box-shadow:none; border:none;
+    }
+
+    /* capa: centraliza o conjunto inteiro na tela em vez de empurrar
+       o menu pro rodapé — evita o vão em branco em telas altas */
+    #capa{ height:100vh; padding-top:0; justify-content:center; }
+    .capa-arco{ max-width:400px; height:40vh; min-height:300px; max-height:420px; }
+    .capa-texto{ margin-top:28px; }
+    .capa-eyebrow{ font-size:19px; }
+    .capa-titulo-topo{ font-size:40px; margin:8px 0 14px; }
+    .capa-tagline{ font-size:17px; max-width:340px; line-height:1.5; }
+    .capa-endereco{ font-size:11px; margin-top:16px; }
+    .capa-menu-row{ max-width:640px; margin:44px auto 0; }
+    .capa-menu-row .item{ font-size:11px; padding:16px 6px; }
+    .capa-rodape{ padding:18px 0 6px; }
+    .capa-rodape span{ font-size:13px; }
+
+    .menu-grid{
+      grid-template-columns:repeat(auto-fit, minmax(130px,1fr));
+      gap:18px; padding:36px 44px 18px; max-width:900px; margin:0 auto;
+    }
+    .menu-head{ max-width:900px; margin:0 auto; padding-left:44px; padding-right:44px; }
+    .menu-head h1{ font-size:32px; }
+    .menu-head .kicker{ font-size:17px; }
+    .menu-head p{ font-size:14px; }
+    .menu-item span{ font-size:12px; }
+    .menu-footer{ max-width:900px; margin:20px auto 0; }
+    .menu-footer p{ font-size:12.5px; }
+
+    /* corpo do texto: escala tipográfica maior pra leitura confortável */
+    .eyebrow{ font-size:16px; }
+    .content{ max-width:680px; margin:0 auto; padding:36px 32px 56px; width:100%; }
+    .content h1{ font-size:29px; }
+    .content .lead{ font-size:15.5px; line-height:1.65; }
+    .subhead{ font-size:17px; margin:24px 0 12px; }
+    .grupo-titulo{ font-size:16px; }
+    ul.simple li{ font-size:14.5px; }
+    .feature p{ font-size:14.5px; }
+    .feature-list{ gap:16px; }
+    .chip{ font-size:12.5px; padding:8px 14px; }
+    .tip-box{ font-size:14px; padding:16px 18px; }
+    .place-card h3{ font-size:17px; }
+    .place-card .endereco{ font-size:12.5px; }
+    .selo-pill{ font-size:12px; }
+    .contact-row strong{ font-size:13.5px; }
+    .contact-row span{ font-size:12.5px; }
+    .card p{ font-size:12.5px; }
+
+    .card-grid{ grid-template-columns:repeat(3,1fr); gap:14px; }
+    .place-card{ display:flex; flex-direction:row; }
+    .place-card .foto{ width:40%; height:auto; min-height:160px; flex-shrink:0; }
+    .place-card .info{ flex:1; display:flex; flex-direction:column; justify-content:center; }
+    .hero-img, .content > .img-placeholder.hero-img{ height:250px; }
+  }
+
+  /* DESKTOP (a partir de ~1024px) */
+  @media (min-width:1024px){
+    .capa-arco{ max-width:460px; height:44vh; min-height:340px; max-height:460px; }
+    .capa-titulo-topo{ font-size:48px; }
+    .capa-tagline{ font-size:19px; max-width:400px; }
+    .capa-eyebrow{ font-size:21px; }
+    .capa-endereco{ font-size:12.5px; }
+    .capa-menu-row{ max-width:720px; margin-top:52px; }
+    .capa-menu-row .item{ font-size:12px; padding:19px 8px; }
+
+    .menu-grid{ max-width:1080px; gap:22px; padding:52px 60px 22px; }
+    .menu-head{ max-width:1080px; padding-left:60px; padding-right:60px; padding-top:12px; }
+    .menu-head h1{ font-size:36px; }
+    .menu-head p{ font-size:15px; }
+    .menu-item span{ font-size:13px; }
+    .menu-footer{ max-width:1080px; }
+    .menu-footer p{ font-size:13px; }
+    .menu-icon svg{ width:28px; height:28px; }
+
+    .eyebrow{ font-size:17px; }
+    .content{ max-width:800px; padding:48px 40px 64px; }
+    .content h1{ font-size:35px; }
+    .content .lead{ font-size:16.5px; line-height:1.7; }
+    .subhead{ font-size:18px; }
+    .grupo-titulo{ font-size:17px; }
+    ul.simple li{ font-size:15px; }
+    .feature p{ font-size:15px; }
+    .chip{ font-size:13px; padding:9px 15px; }
+    .tip-box{ font-size:14.5px; padding:18px 20px; }
+    .place-card h3{ font-size:18px; }
+    .place-card .endereco{ font-size:13px; }
+    .contact-row strong{ font-size:14.5px; }
+    .contact-row span{ font-size:13px; }
+
+    .card-grid{ grid-template-columns:repeat(4,1fr); gap:16px; }
+    .hero-img, .content > .img-placeholder.hero-img{ height:300px; }
+    .place-card .foto{ width:36%; }
+
+    /* cursor de mãozinha nos itens clicáveis, já que agora tem gente com mouse */
+    .menu-item, .capa-menu-row .item, .place-card, .card, .chip, .capa-rodape, .back-link, .contact-row{
+      cursor:pointer;
+    }
+  }
+
+  /* TELAS MUITO LARGAS (a partir de ~1440px) — a foto de fundo da
+     capa acompanha a largura, o resto do conteúdo continua legível */
+  @media (min-width:1440px){
+    .content{ max-width:880px; }
+    .menu-grid, .menu-head, .menu-footer{ max-width:1180px; }
+  }
 </style>
 </head>
 <body>
